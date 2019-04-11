@@ -26,6 +26,8 @@ class Tomcat:
             self.http_auth_type = auth_type
             logger.info('Tomcat Manager interface detected: {}'.format(
                 self.interface_url))
+            logger.warning('Warning: By default, Tomcat has an account lockout ' \
+                'feature (max 5 failures, lockout duration of 300s)')
             return True
 
         logger.error('No Tomcat authentication interface detected')

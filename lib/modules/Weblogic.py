@@ -25,6 +25,8 @@ class Weblogic:
             self.interface_url = '{}/console/j_security_check'.format(self.url)
             logger.info('Weblogic administration console detected: {}'.format(
                 self.interface_url))
+            logger.warning('Warning: By default, Weblogic has an account lockout ' \
+                'feature (max 5 failures per 5 minutes, lockout duration of 30min)')
             return True
 
         logger.error('No Weblogic authentication interface detected')
