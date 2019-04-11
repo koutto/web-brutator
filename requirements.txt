@@ -1,0 +1,7 @@
+colored
+colorlog
+hashlib
+hmac
+requests
+requests_ntlm
+urllib3
