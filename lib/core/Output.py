@@ -48,9 +48,9 @@ class Output:
                 self.inline(message)
 
 
-    def found_creds(self, username, password):
+    def found_creds(self, type_, username, password):
         with self.mutex:
-            message = 'Found creds: {}:{}'.format(username, password)
+            message = 'Found {} creds: {}:{}'.format(type_, username, password)
             message = colored.stylize(message, colored.fg('light_green') + colored.attr('bold'))
             if self.last_inline == True:
                 self.erase()

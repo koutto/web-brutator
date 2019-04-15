@@ -123,7 +123,7 @@ class Controller:
             self.creds_found.append((username, password))
             self.output.last_creds(username, password, index, 
                 self.wordlist.length, verbose=self.args.verbose)
-            self.output.found_creds(username, password)
+            self.output.found_creds(self.args.type, username, password)
             if self.args.stoponsuccess:
                 self.bruteforcer.stop()
 
