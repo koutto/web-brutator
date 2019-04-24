@@ -1,6 +1,5 @@
 colored
 colorlog
-hmac
 requests
 requests_ntlm
 urllib3
