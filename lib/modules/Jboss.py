@@ -82,7 +82,7 @@ class Jboss:
             m = re.search('<input type="hidden" name="javax\.faces\.ViewState" ' \
                 'id="javax\.faces\.ViewState" value="(?P<viewstate>.*?)"', r.text)
             if not m:
-                raise RequestException('Unable to retrieve ViewState from {}'.format(url))
+                raise RequestException('Unable to retrieve ViewState from {}'.format(self.interface_url))
 
             data = OrderedDict([
                 ("login_form", "login_form"),
@@ -96,7 +96,7 @@ class Jboss:
                 r.headers['Set-Cookie'])
             if not m:
                 raise RequestException('Unable to retrieve JSESSIONID value ' \
-                    'from {}'.format(url))
+                    'from {}'.format(self.interface_url))
 
             r = Requester.post(self.interface_url, data, 
                 headers={'Cookie': 'JSESSIONID={}'.format(m.group('jsessionid'))},
