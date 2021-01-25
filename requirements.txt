@@ -3,3 +3,4 @@ colorlog
 requests
 requests_ntlm
 urllib3
+bs4
