@@ -12,7 +12,7 @@ from lib.core.Requester import AuthMode, Requester
 
 class Coldfusion:
 
-    def __init__(self, url):
+    def __init__(self, url, verbose=False):
         self.url = url
         self.interface = None
         self.interface_url = None

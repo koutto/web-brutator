@@ -47,6 +47,19 @@ class Controller:
             sys.exit(0)
         logger.success('Connection to target OK. HTTP Status {}'.format(r.status_code))
 
+        # Handle potential <meta> refresh
+        meta_refresh_url = Requester.get_meta_redirect_url(r.text, self.args.url)
+        if meta_refresh_url:
+            logger.info('Meta refresh mechanism has been detected. Following redirect...')
+            self.args.url = meta_refresh_url
+            try:
+                r = Requester.get(self.args.url)
+            except RequestException as e:
+                logger.error('Redirected URL seems not reachable:')
+                logger.error(e)
+                sys.exit(0)
+            logger.success('Connection to redirection OK. HTTP Status {}'.format(r.status_code))            
+
         # Create wordlist queue
         try:
             self.wordlist = Wordlist(self.args.username,
@@ -69,7 +82,8 @@ class Controller:
                 self.args.type.capitalize()))
             traceback.print_exc()
             return
-        module = getattr(mod, self.args.type.capitalize())(self.args.url)
+        module = getattr(mod, self.args.type.capitalize())(
+            self.args.url, verbose=self.args.verbose)
 
         # Detect authentication interface
         try:
