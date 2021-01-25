@@ -3,6 +3,8 @@
 import enum
 import requests
 import requests_ntlm
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 from lib.core.ArgumentsParser import *
 from lib.core.Config import *
@@ -20,11 +22,16 @@ class AuthMode(enum.Enum):
 class Requester:
 
     @staticmethod
-    def get(url, headers={}, allow_redirects=True):
+    def get(url, params={}, headers={}, cookies=None, allow_redirects=True):
         headers['User-Agent'] = USER_AGENT
         try:
-            r = requests.get(url, headers=headers, 
-                verify=False, timeout=Globals.timeout, 
+            r = requests.get(
+                url,
+                params=params, 
+                headers=headers, 
+                cookies=cookies,
+                verify=False, 
+                timeout=Globals.timeout, 
                 allow_redirects=allow_redirects)
             return r
         except Exception as e:
@@ -32,11 +39,16 @@ class Requester:
 
 
     @staticmethod
-    def post(url, data, headers={}, allow_redirects=True):
+    def post(url, data, headers={}, cookies=None, allow_redirects=True):
         headers['User-Agent'] = USER_AGENT
         try:
-            r = requests.post(url, data=data, 
-                verify=False, headers=headers, timeout=Globals.timeout,
+            r = requests.post(
+                url, 
+                data=data, 
+                verify=False, 
+                headers=headers, 
+                cookies=cookies,
+                timeout=Globals.timeout,
                 allow_redirects=allow_redirects)
             return r
         except Exception as e:
@@ -47,7 +59,10 @@ class Requester:
     def get_http_auth_type(url, headers={}):
         headers['User-Agent'] = USER_AGENT
         try:
-            r = requests.get(url, verify=False, headers=headers, 
+            r = requests.get(
+                url, 
+                verify=False, 
+                headers=headers, 
                 timeout=Globals.timeout)
         except Exception as e:
             raise RequestException('Network error: {}'.format(e))
@@ -79,10 +94,36 @@ class Requester:
 
         headers['User-Agent'] = USER_AGENT
         try:
-            r = requests.get(url, headers=headers, auth=auth, 
-                    verify=False, timeout=Globals.timeout)
+            r = requests.get(
+                url, 
+                headers=headers, 
+                auth=auth, 
+                verify=False, 
+                timeout=Globals.timeout)
             return r
         except Exception as e:
             raise RequestException('Network error: {}'.format(e))
 
+
+    @staticmethod
+    def get_meta_redirect_url(page, base_url):
+        """
+        Return URL from <meta> refresh tag if present on the page
+        Tag example:
+        <meta http-equiv="refresh" content="5; url=https://example.com/">
+        """
+        soup = BeautifulSoup(page, 'html.parser')
+        meta = soup.find('meta', attrs={'http-equiv': 'refresh'})
+        if not meta or not meta.has_attr('content'):
+            return None
+
+        try:
+            url = meta.attrs['content'].split(';')[1].split('=')[1]
+        except:
+            return None
+
+        if url.lower().startswith('http://') or url.lower().startswith('https://'):
+            return url
+        else:
+            return urljoin(base_url, url)
 
