@@ -61,7 +61,7 @@ python3 web-brutator.py --target jenkins --url https://mytarget.com -U ./usernam
 - websphere
 
 *Notice: Some products implement account lockout after a given number of failed authentication attempts, by default (e.g. Weblogic, Tomcat...).
-`web-brutator` notices the user at the beginning of bruteforce attack it is the case. Take this into account before launching bruteforce on such 
+`web-brutator` notices the user at the beginning of bruteforce attack if it is the case. Take this into account before launching bruteforce on such 
 targets.*
 
 # :bulb: Standard web authentication form Auto-Detection
@@ -80,6 +80,7 @@ Example:
 python3 web-brutator.py --target standardform --url https://mytarget.com -U ./usernames.txt -P ./passwords.txt -s -t 40 -v
 ```
 ![Demo](./img/demo.gif)
+*This example is against a phpMyAdmin interface*
 
 
 # :wrench: Add new module / Contribute
