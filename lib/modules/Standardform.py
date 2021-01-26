@@ -39,7 +39,7 @@ class Standardform:
         fields = OrderedDict()
         for input in soup.find_all('input', attrs={'name': True, 'type': True}):
             # Single element name/value fields
-            if input.attrs['type'].lower() in ('text', 'hidden', 'password', 'submit', 'image'):
+            if input.attrs['type'].lower() in ('text', 'email', 'hidden', 'password', 'submit', 'image'):
                 value = ''
                 if 'value' in input.attrs:
                     value = input.attrs['value']
@@ -176,7 +176,7 @@ class Standardform:
         # Detect username field
         inputs_text = target_form.find_all(
             'input', 
-            type=lambda x: x and x.lower()=='text', 
+            type=lambda x: x and x.lower() in ('text','email'), 
             attrs={'name': True})
         if is_input_password_type_text:
             try:
