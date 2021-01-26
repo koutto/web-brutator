@@ -82,7 +82,7 @@ python3 web-brutator.py --target standardform --url https://mytarget.com -U ./us
 ![Demo](./img/demo.gif)
 
 
-# [:wrench: Add new module / Contribute
+# :wrench: Add new module / Contribute
 Adding a new authentication bruteforce module is pretty straightforward:
 
 1. Create a new file with appropriate name under `lib/core/modules/`
