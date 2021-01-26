@@ -2,12 +2,12 @@
 
 Fast Modular Web Interfaces Bruteforcer
 
-# Install
+# :inbox_tray: Install
 ```
 python3 -m pip install -r requirements.txt
 ```
 
-# Usage
+# :fast_forward: Usage
 ```
 $ python3 web-brutator.py -h
 
@@ -46,7 +46,7 @@ Example:
 python3 web-brutator.py --target jenkins --url https://mytarget.com -U ./usernames.txt -P ./passwords.txt -s -t 40
 ```
 
-# Available Modules
+# :rocket: Available Modules
 - axis2
 - coldfusion
 - glassfish
@@ -64,9 +64,9 @@ python3 web-brutator.py --target jenkins --url https://mytarget.com -U ./usernam
 `web-brutator` notices the user at the beginning of bruteforce attack it is the case. Take this into account before launching bruteforce on such 
 targets.*
 
-# Standard Web Authentication Form Auto-Detection
+# :bulb: Standard web authentication form Auto-Detection
 `web-brutator` can automatically detect **standard** web authentication forms and perform bruteforce automatically.
-This feature is available via the module `standardform`, it is still experimental and can lead to false positives/negatives 
+This feature is available via the module `standardform`, it is **still experimental** and can lead to false positives/negatives 
 since it is based on several heuristics. 
 
 Not supported:
@@ -82,7 +82,7 @@ python3 web-brutator.py --target standardform --url https://mytarget.com -U ./us
 ![Demo](./img/demo.gif)
 
 
-# Add Module / Contribute
+# [:wrench: Add new module / Contribute
 Adding a new authentication bruteforce module is pretty straightforward:
 
 1. Create a new file with appropriate name under `lib/core/modules/`
