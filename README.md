@@ -80,7 +80,7 @@ Example:
 python3 web-brutator.py --target standardform --url https://mytarget.com -U ./usernames.txt -P ./passwords.txt -s -t 40 -v
 ```
 ![Demo](./img/demo.gif)
-*This example is against a phpMyAdmin interface*
+*This demo is against a phpMyAdmin interface*
 
 
 # :wrench: Add new module / Contribute
