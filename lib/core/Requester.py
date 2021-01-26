@@ -68,6 +68,9 @@ class Requester:
             raise RequestException('Network error: {}'.format(e))
 
         if r.status_code == 401:
+            if 'WWW-Authenticate' not in r.headers:
+                raise RequestException('HTTP Authentication type cannot be determined '
+                    'because there is no response header "WWW-Authenticate"')
             respheader = r.headers['WWW-Authenticate'].lower()
             if 'basic' in respheader:
                 return AuthMode.BASIC
