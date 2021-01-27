@@ -5,6 +5,7 @@ import difflib
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from urllib.parse import urljoin
+from requests_toolbelt.utils import dump
 
 from lib.core.Exceptions import AuthException, RequestException
 from lib.core.Logger import logger
@@ -37,7 +38,9 @@ class Standardform:
         Turn a BeautifulSoup form into a dict of fields and default values
         """
         fields = OrderedDict()
-        for input in soup.find_all('input', attrs={'name': True, 'type': True}):
+        for input in soup.find_all('input', attrs={'name': True}):
+            if 'type' not in input.attrs:
+                input.attrs['type'] = 'text'
             # Single element name/value fields
             if input.attrs['type'].lower() in ('text', 'email', 'hidden', 'password', 'submit', 'image'):
                 value = ''
@@ -93,6 +96,20 @@ class Standardform:
         return fields
 
 
+    def __find_username_field_via_name(self, inputs):
+        """
+        Try to find the name of username field among a list of input fields.
+        Looks for the most evocative value for the "name" attribute
+        :param list inputs: List of inputs candidates
+        :return str name: Username field name (None if not found)
+        """
+        for input in inputs:
+            for n in ('name', 'login', 'user', 'mail'):
+                if n in input.attrs['name'].lower():
+                    return input.attrs['name']
+        return None
+
+
     def check(self):
         r = Requester.get(self.url)
 
@@ -132,7 +149,7 @@ class Standardform:
                 input_password = f.find(
                     'input', 
                     type=lambda x: x and x.lower()=='text', 
-                    attrs={'name': re.compile('.*(pass|pwd).*', re.IGNORECASE)})
+                    attrs={'name': re.compile('.*(pass|pwd|pswd|pssw|pswrd).*', re.IGNORECASE)})
                 if input_password:
                     is_input_password_type_text = True
             if input_password:
@@ -193,12 +210,17 @@ class Standardform:
             self.username_field = inputs_text[0].attrs['name']
         else:
             # Take the one with the most explicit name if found, otherwise the first one
-            for input in inputs_text:
-                for n in ('name', 'login', 'user', 'mail'):
-                    if n in input.attrs['name'].lower():
-                        self.username_field = input.attrs['name']
+            self.username_field = self.__find_username_field_via_name(inputs_text)
             if not self.username_field:
                 self.username_field = inputs_text[0].attrs['name']
+
+        # In rare case, username field can have no type
+        if not self.username_field:
+            inputs_no_type = target_form.find_all(
+                'input', 
+                type=False, 
+                attrs={'name': True})
+            self.username_field = self.__find_username_field_via_name(inputs_no_type)         
 
         if self.username_field:
             logger.info('Detected username field name = {name}'.format(name=self.username_field))
@@ -254,11 +276,9 @@ class Standardform:
                 data=self.parameters,
                 cookies=self.cookies)
         if self.verbose:
-            logger.info('Request sent:')
-            print(r.request.headers)
-            print(r.request.body)
-            logger.info('Response received:')
-            print(r.text)
+            logger.info('Raw HTTP Request/Response:')
+            data = dump.dump_all(r)
+            print(data.decode('utf-8'))
 
 
         # Check authentication status 
@@ -274,7 +294,8 @@ class Standardform:
 
         # Heuristic check of failed attemps based on possible error messages
         if re.search('(username\s+or\s+password|cannot\s+log\s*in|unauthorized'
-            '|auth(entication)?\s+fail|(invalid|wrong)\s+(cred|user|login|mail|email|e-mail|pass))', 
+            '|auth(entication)?\s+fail|(invalid|wrong)\s+(cred|user|login|mail|email|e-mail|pass)'
+            '|error\s+during\s+(login|auth))', 
             r.text, re.IGNORECASE):
             return False
 

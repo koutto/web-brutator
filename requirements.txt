@@ -2,5 +2,6 @@ colored
 colorlog
 requests
 requests_ntlm
+requests_toolbelt
 urllib3
 bs4
