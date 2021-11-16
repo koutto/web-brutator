@@ -293,7 +293,7 @@ class Standardform:
             return False
 
         # Heuristic check of failed attemps based on possible error messages
-        if re.search('(username\s+or\s+password|cannot\s+log\s*in|unauthorized'
+        if re.search('(username\s+(or|and)\s+password|cannot\s+log\s*in|unauthorized'
             '|auth(entication)?\s+fail|(invalid|wrong)\s+(cred|user|login|mail|email|e-mail|pass)'
             '|error\s+during\s+(login|auth))', 
             r.text, re.IGNORECASE):
